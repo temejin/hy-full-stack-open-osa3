@@ -13,9 +13,8 @@ app.get('/info', (request, response) => {
   Contact.find({})
     .then(contacts => {
       const infoText = `Phonebook has info for ${contacts.length} people<br><br>`
-      const date = Date()
       response.send(infoText.concat(Date()))
-  })
+    })
 })
 
 app.get('/api/persons', (request, response) => {
@@ -39,7 +38,7 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 const unknownEndpoint = (request,response) => {
-  response.status(404).send({error: 'unknown endpoint'})
+  response.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -58,7 +57,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response,next) => {
   Contact.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -74,7 +73,7 @@ app.put('/api/persons/:id', (request, response, next) => {
   Contact.findByIdAndUpdate(
     request.params.id,
     contact,
-    {new: true, runValidators: true, context: 'query'}
+    { new: true, runValidators: true, context: 'query' }
   )
     .then(updatedContact => {
       response.json(updatedContact)
@@ -85,13 +84,10 @@ app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
-  switch (error.name) {
-    case 'CastError':
-      return response.status(400).send({error: 'malformatted id'})
-    case 'ValidationError':
-      return response.status(400).send({error: error.message})
-    default:
-      return response.status(400).send({error: error.name})
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: error.message })
   }
 
   next(error)

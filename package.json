@@ -8,11 +8,13 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf dist && cd ../repo/osa02/puhelinluettelo/ && npm run build && cp -r dist ../../../osa03/",
-    "deploy": "npm run build:ui && git add . && git commit -m uibuild && git push"
+    "deploy": "npm run build:ui && git add . && git commit -m uibuild && git push",
+    "lint": "eslint ."
   },
   "author": "temejin",
   "license": "ISC",
   "devDependencies": {
+    "eslint": "^8.51.0",
     "nodemon": "^3.0.1"
   },
   "dependencies": {

@@ -19,26 +19,22 @@ const contactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model('Contact', contactSchema)
 
-switch (process.argv.length) {
-  case 3:
-    Contact.find({}).then(result => {
-      console.log("phonebook:")
-      result.map(c => console.log(`${c.name} ${c.number}`))
-      mongoose.connection.close()
-    })
-    break
-  case 5:
-    const contact = new Contact({
-      name: process.argv[3],
-      number: process.argv[4]
-    })
-    contact.save().then(result => {
-      console.log(`added ${contact.name} number ${contact.number} to phonebook`)
-      mongoose.connection.close()
-    })
-    break
-  default:
-    console.log("Give a name and number to save into database, or leave blank to fetch data")
-    break
-}
 
+if (process.argv.length === 3) {
+  Contact.find({}).then(result => {
+    console.log('phonebook:')
+    result.map(c => console.log(`${c.name} ${c.number}`))
+    mongoose.connection.close()
+  })
+} else if (process.argv.length === 5) {
+  const contact = new Contact({
+    name: process.argv[3],
+    number: process.argv[4]
+  })
+  contact.save().then(() => {
+    console.log(`added ${contact.name} number ${contact.number} to phonebook`)
+    mongoose.connection.close()
+  })
+} else {
+  console.log('Give a name and number to save into database, or leave blank to fetch data')
+}
